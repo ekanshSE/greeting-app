@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greeting App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Greeting App</h1>
+        <input type="text" id="nameInput" placeholder="Enter your name" />
+        <button onclick="getGreeting()">Get Greeting</button>
+        <button onclick="clearInput()">Clear</button>
+        <p id="responseMessage"></p>
+    </div>
+    <script>
+        function getGreeting() {
+            const name = document.getElementById('nameInput').value;
+            const responseMessage = document.getElementById('responseMessage');
+
+            if (!name) {
+                responseMessage.textContent = 'Name is required.';
+                return;
+            }
+
+            fetch(`http://localhost:3000/api/greet?name=${encodeURIComponent(name)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        responseMessage.textContent = data.error;
+                    } else {
+                        responseMessage.textContent = data.message;
+                    }
+                })
+                .catch(error => {
+                    responseMessage.textContent = 'Failed to get a response from the server.';
+                });
+        }
+
+        function clearInput() {
+            document.getElementById('nameInput').value = '';
+            document.getElementById('responseMessage').textContent = '';
+        }
+    </script>
+</body>
+</html>
